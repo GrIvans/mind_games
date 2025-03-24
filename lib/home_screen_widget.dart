@@ -38,7 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
-                    Text('Размер: 2x2'),
+                    matrixA.isNotEmpty
+                        ? Text('Размер: ${matrixA.length}x${matrixA[0].length}')
+                        : Text('Матрица не задана'),
                     SizedBox(height: 5),
                     ElevatedButton(
                       onPressed: () async {
@@ -74,11 +76,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => AlgorithmResultScreen(
-                                  algorithm: 'max-min',
-                                  matrixA: matrixA,
-                                  matrixB: matrixB,
-                                )),
+                          builder: (context) => AlgorithmResultScreen(
+                            algorithm: 'max-min',
+                            matrixA: matrixA,
+                            matrixB: matrixB,
+                          ),
+                        ),
                       );
                     },
                   ),

@@ -15,7 +15,6 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
   List<List<double>> matrixB = [];
   List<List<TextEditingController>> controllersA = [];
   List<List<TextEditingController>> controllersB = [];
-  bool showMatrixB = false;
 
   @override
   void initState() {
@@ -79,6 +78,9 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ввод матрицы'),
+        leading: SizedBox(
+          width: 10,
+        ),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),
@@ -173,46 +175,7 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
               ),
             ),
 
-            SizedBox(height: 20),
-
-            // Переключатель матриц
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showMatrixB = false;
-                      });
-                    },
-                    child: Text('Матрица A'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: !showMatrixB
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showMatrixB = true;
-                      });
-                    },
-                    child: Text('Матрица B'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: showMatrixB
-                          ? Theme.of(context).primaryColor
-                          : Colors.grey,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            SizedBox(height: 20),
+            SizedBox(height: 4),
 
             // Текущая матрица (A или B)
             Card(
@@ -222,9 +185,7 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      showMatrixB
-                          ? 'Матрица выигрышей второго игрока (B)'
-                          : 'Матрица выигрышей первого игрока (A)',
+                      'Матрица выигрышей первого игрока (A)',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
@@ -234,47 +195,30 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Column(
-                        children: List.generate(
-                          rows,
-                          (i) => Row(
-                            children: List.generate(
-                              cols,
-                              (j) => Expanded(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border(
-                                      right: j < cols - 1
-                                          ? BorderSide(color: Colors.grey)
-                                          : BorderSide.none,
-                                      bottom: i < rows - 1
-                                          ? BorderSide(color: Colors.grey)
-                                          : BorderSide.none,
-                                    ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.all(4.0),
-                                    child: TextField(
-                                      controller: showMatrixB
-                                          ? controllersB[i][j]
-                                          : controllersA[i][j],
-                                      textAlign: TextAlign.center,
-                                      keyboardType:
-                                          TextInputType.numberWithOptions(
-                                              decimal: true),
-                                      decoration: InputDecoration(
-                                        isDense: true,
-                                        contentPadding: EdgeInsets.all(8),
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
+                      child: generateMatrixWidget(showMatrixB: false),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Card(
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    SizedBox(height: 16),
+                    Text(
+                      'Матрица выигрышей второго игрока (B)',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8),
                       ),
+                      child: generateMatrixWidget(showMatrixB: true),
                     ),
                   ],
                 ),
@@ -285,6 +229,48 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
           onPressed: saveMatrix, label: Text("Сохранить")),
+    );
+  }
+
+  Widget generateMatrixWidget({required bool showMatrixB}) {
+    return Column(
+      children: List.generate(
+        rows,
+        (i) => Row(
+          children: List.generate(
+            cols,
+            (j) => Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border(
+                    right: j < cols - 1
+                        ? BorderSide(color: Colors.grey)
+                        : BorderSide.none,
+                    bottom: i < rows - 1
+                        ? BorderSide(color: Colors.grey)
+                        : BorderSide.none,
+                  ),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(4.0),
+                  child: TextField(
+                    controller:
+                        showMatrixB ? controllersB[i][j] : controllersA[i][j],
+                    textAlign: TextAlign.center,
+                    keyboardType:
+                        TextInputType.numberWithOptions(decimal: true),
+                    decoration: InputDecoration(
+                      isDense: true,
+                      contentPadding: EdgeInsets.all(8),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
