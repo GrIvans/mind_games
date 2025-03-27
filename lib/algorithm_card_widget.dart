@@ -5,7 +5,7 @@ class AlgorithmCard extends StatelessWidget {
   final IconData icon;
   final Function onTap;
 
-  const AlgorithmCard({
+  const AlgorithmCard({super.key, 
     required this.title,
     required this.icon,
     required this.onTap,
