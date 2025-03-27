@@ -62,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
             SizedBox(height: 20),
 
-            // Карточки с алгоритмами
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,

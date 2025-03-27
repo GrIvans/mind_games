@@ -70,6 +70,12 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
   }
 
   void saveMatrix() {
+    for (var i = 0; i < rows; i++) {
+      for (var j = 0; j < cols; j++) {
+        matrixA[i][j] = double.parse(controllersA[i][j].text);
+        matrixB[i][j] = double.parse(controllersB[i][j].text);
+      }
+    }
     Navigator.pop(context, (matrixA, matrixB));
   }
 
@@ -177,7 +183,6 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
 
             SizedBox(height: 4),
 
-            // Текущая матрица (A или B)
             Card(
               child: Padding(
                 padding: EdgeInsets.all(16.0),
