@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_games/home_screen_widget.dart';
+import 'package:mind_games/widgets/home_screen_widget.dart';
 
 void main() {
   runApp(GameTheoryApp());

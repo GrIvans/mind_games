@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mind_games/algorithm_card_widget.dart';
-import 'package:mind_games/algorithm_result_screen_widget.dart';
-import 'package:mind_games/matrix_input_screen_widget.dart';
+import 'package:mind_games/widgets/algorithm_card_widget.dart';
+import 'package:mind_games/widgets/algorithm_result_screen_widget.dart';
+import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
