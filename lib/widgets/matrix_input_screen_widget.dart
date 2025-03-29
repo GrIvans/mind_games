@@ -1,5 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mind_games/data/matrix.dart';
+import 'package:mind_games/data/matrix_provider.dart';
+import 'package:provider/provider.dart';
 
 class MatrixInputScreen extends StatefulWidget {
   const MatrixInputScreen({super.key});
@@ -70,13 +73,9 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
   }
 
   void saveMatrix() {
-    for (var i = 0; i < rows; i++) {
-      for (var j = 0; j < cols; j++) {
-        matrixA[i][j] = double.parse(controllersA[i][j].text);
-        matrixB[i][j] = double.parse(controllersB[i][j].text);
-      }
-    }
-    Navigator.pop(context, (matrixA, matrixB));
+    context.read<MatrixProvider>().setMatrixA(Matrix.fromList(matrixA));
+    context.read<MatrixProvider>().setMatrixB(Matrix.fromList(matrixB));
+    Navigator.pop(context);
   }
 
   @override

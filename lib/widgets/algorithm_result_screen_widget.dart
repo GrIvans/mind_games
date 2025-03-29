@@ -1,37 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:mind_games/data/matrix_provider.dart';
+import 'package:provider/provider.dart';
 
 class AlgorithmResultScreen extends StatefulWidget {
   final String algorithm;
-  final List<List<double>> matrixA;
-  final List<List<double>> matrixB;
 
-  const AlgorithmResultScreen(
-      {super.key,
-      required this.algorithm,
-      required this.matrixA,
-      required this.matrixB});
+  const AlgorithmResultScreen({
+    super.key,
+    required this.algorithm,
+  });
 
   @override
   AlgorithmResultScreenState createState() => AlgorithmResultScreenState();
 }
 
 class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
-  // Это данные для демонстрации - в реальном приложении они будут приходить из модели данных
-
+  List<List<num>> matrixA = [];
+  List<List<num>> matrixB = [];
   Map<String, dynamic> results = {};
   List<List<bool>> highlightCellsA = [];
   List<List<bool>> highlightCellsB = [];
+
   @override
   void initState() {
     super.initState();
 
-    // Инициализация матриц подсветки
-    highlightCellsA = List.generate(widget.matrixA.length,
-        (_) => List.filled(widget.matrixA[0].length, false));
-    highlightCellsB = List.generate(widget.matrixB.length,
-        (_) => List.filled(widget.matrixB[0].length, false));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      var provider = context.read<MatrixProvider>();
+      matrixA = provider.matrixA.list;
+      matrixB = provider.matrixB.list;
+    });
 
-    // В зависимости от алгоритма, вычисляем результаты и подсветку
     switch (widget.algorithm) {
       case 'maxmin':
         calculateMaxMin();
@@ -50,16 +49,16 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
 
   void calculateMaxMin() {
     // Максимин для первого игрока
-    List<double> rowMins = [];
+    List<num> rowMins = [];
     List<int> minIndices = [];
 
-    for (int i = 0; i < widget.matrixA.length; i++) {
-      double minInRow = widget.matrixA[i][0];
+    for (int i = 0; i < matrixA.length; i++) {
+      num minInRow = matrixA[i][0];
       int minIndex = 0;
 
-      for (int j = 1; j < widget.matrixA[i].length; j++) {
-        if (widget.matrixA[i][j] < minInRow) {
-          minInRow = widget.matrixA[i][j];
+      for (int j = 1; j < matrixA[i].length; j++) {
+        if (matrixA[i][j] < minInRow) {
+          minInRow = matrixA[i][j];
           minIndex = j;
         }
       }
@@ -68,7 +67,7 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
       minIndices.add(minIndex);
     }
 
-    double maxmin = rowMins[0];
+    num maxmin = rowMins[0];
     int maxminRow = 0;
 
     for (int i = 1; i < rowMins.length; i++) {
@@ -79,16 +78,16 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
     }
 
     // Минимакс для второго игрока
-    List<double> colMaxs = [];
+    List<num> colMaxs = [];
     List<int> maxIndices = [];
 
-    for (int j = 0; j < widget.matrixB[0].length; j++) {
-      double maxInCol = widget.matrixB[0][j];
+    for (int j = 0; j < matrixB[0].length; j++) {
+      num maxInCol = matrixB[0][j];
       int maxIndex = 0;
 
-      for (int i = 1; i < widget.matrixB.length; i++) {
-        if (widget.matrixB[i][j] > maxInCol) {
-          maxInCol = widget.matrixB[i][j];
+      for (int i = 1; i < matrixB.length; i++) {
+        if (matrixB[i][j] > maxInCol) {
+          maxInCol = matrixB[i][j];
           maxIndex = i;
         }
       }
@@ -97,7 +96,7 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
       maxIndices.add(maxIndex);
     }
 
-    double minmax = colMaxs[0];
+    num minmax = colMaxs[0];
     int minmaxCol = 0;
 
     for (int j = 1; j < colMaxs.length; j++) {
@@ -127,8 +126,8 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
     dominatedRows = [1]; // Вторая строка доминируема
 
     // Подсветка доминируемых стратегий
-    for (int i = 0; i < widget.matrixA.length; i++) {
-      for (int j = 0; j < widget.matrixA[i].length; j++) {
+    for (int i = 0; i < matrixA.length; i++) {
+      for (int j = 0; j < matrixA[i].length; j++) {
         if (dominatedRows.contains(i)) {
           highlightCellsA[i][j] = true;
           highlightCellsB[i][j] = true;
@@ -150,13 +149,13 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
     List<List<int>> nashEquilibria = [];
 
     // Для 2x2 матрицы, проверяем все ячейки на равновесие Нэша
-    for (int i = 0; i < widget.matrixA.length; i++) {
-      for (int j = 0; j < widget.matrixA[i].length; j++) {
+    for (int i = 0; i < matrixA.length; i++) {
+      for (int j = 0; j < matrixA[i].length; j++) {
         bool isNash = true;
 
         // Проверка для первого игрока
-        for (int i2 = 0; i2 < widget.matrixA.length; i2++) {
-          if (widget.matrixA[i2][j] > widget.matrixA[i][j]) {
+        for (int i2 = 0; i2 < matrixA.length; i2++) {
+          if (matrixA[i2][j] > matrixA[i][j]) {
             isNash = false;
             break;
           }
@@ -165,8 +164,8 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
         if (!isNash) continue;
 
         // Проверка для второго игрока
-        for (int j2 = 0; j2 < widget.matrixB[i].length; j2++) {
-          if (widget.matrixB[i][j2] > widget.matrixB[i][j]) {
+        for (int j2 = 0; j2 < matrixB[i].length; j2++) {
+          if (matrixB[i][j2] > matrixB[i][j]) {
             isNash = false;
             break;
           }
@@ -245,21 +244,22 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
                       ),
                       child: Column(
                         children: List.generate(
-                          widget.matrixA.length,
+                          matrixA.length,
                           (i) => Row(
                             children: List.generate(
-                              widget.matrixA[i].length,
+                              matrixA[i].length,
                               (j) => Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: highlightCellsA[i][j]
-                                        ? Colors.lightBlue.withOpacity(0.3)
+                                        ? Colors.lightBlue
+                                            .withValues(alpha: (0.3 * 255))
                                         : null,
                                     border: Border(
-                                      right: j < widget.matrixA[i].length - 1
+                                      right: j < matrixA[i].length - 1
                                           ? BorderSide(color: Colors.grey)
                                           : BorderSide.none,
-                                      bottom: i < widget.matrixA.length - 1
+                                      bottom: i < matrixA.length - 1
                                           ? BorderSide(color: Colors.grey)
                                           : BorderSide.none,
                                     ),
@@ -268,7 +268,7 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
                                     padding: EdgeInsets.all(12.0),
                                     child: Center(
                                       child: Text(
-                                        '${widget.matrixA[i][j]}',
+                                        '${matrixA[i][j]}',
                                         style: TextStyle(
                                           fontWeight: highlightCellsA[i][j]
                                               ? FontWeight.bold
@@ -311,21 +311,22 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
                       ),
                       child: Column(
                         children: List.generate(
-                          widget.matrixB.length,
+                          matrixB.length,
                           (i) => Row(
                             children: List.generate(
-                              widget.matrixB[i].length,
+                              matrixB[i].length,
                               (j) => Expanded(
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: highlightCellsB[i][j]
-                                        ? Colors.lightBlue.withOpacity(0.3)
+                                        ? Colors.lightBlue
+                                            .withValues(alpha: (0.3 * 255))
                                         : null,
                                     border: Border(
-                                      right: j < widget.matrixB[i].length - 1
+                                      right: j < matrixB[i].length - 1
                                           ? BorderSide(color: Colors.grey)
                                           : BorderSide.none,
-                                      bottom: i < widget.matrixB.length - 1
+                                      bottom: i < matrixB.length - 1
                                           ? BorderSide(color: Colors.grey)
                                           : BorderSide.none,
                                     ),
@@ -334,7 +335,7 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
                                     padding: EdgeInsets.all(12.0),
                                     child: Center(
                                       child: Text(
-                                        '${widget.matrixB[i][j]}',
+                                        '${matrixB[i][j]}',
                                         style: TextStyle(
                                           fontWeight: highlightCellsB[i][j]
                                               ? FontWeight.bold

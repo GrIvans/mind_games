@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mind_games/data/matrix_provider.dart';
 import 'package:mind_games/widgets/algorithm_card_widget.dart';
 import 'package:mind_games/widgets/algorithm_result_screen_widget.dart';
 import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,8 +15,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    List<List<double>> matrixA = [];
-    List<List<double>> matrixB = [];
+    final matrixProvider = Provider.of<MatrixProvider>(context);
+    final List<List<num>> matrixA = matrixProvider.matrixA.list;
     return Scaffold(
       appBar: AppBar(
         title: Text('Теоретико-игровая модель'),
@@ -44,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     SizedBox(height: 5),
                     ElevatedButton(
                       onPressed: () async {
-                        (matrixA, matrixB) = await Navigator.push(
+                        await Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (context) => MatrixInputScreen()),
@@ -77,8 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                           builder: (context) => AlgorithmResultScreen(
                             algorithm: 'max-min',
-                            matrixA: matrixA,
-                            matrixB: matrixB,
                           ),
                         ),
                       );
@@ -93,8 +93,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                           builder: (context) => AlgorithmResultScreen(
                             algorithm: 'dominated',
-                            matrixA: matrixA,
-                            matrixB: matrixB,
                           ),
                         ),
                       );
@@ -109,8 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                           builder: (context) => AlgorithmResultScreen(
                             algorithm: 'nash',
-                            matrixA: matrixA,
-                            matrixB: matrixB,
                           ),
                         ),
                       );
@@ -125,8 +121,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         MaterialPageRoute(
                           builder: (context) => AlgorithmResultScreen(
                             algorithm: 'mixed',
-                            matrixA: matrixA,
-                            matrixB: matrixB,
                           ),
                         ),
                       );
