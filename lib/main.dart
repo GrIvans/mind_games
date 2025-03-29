@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:mind_games/data/matrix_provider.dart';
+import 'package:mind_games/data/game_provider.dart';
 import 'package:mind_games/widgets/home_screen_widget.dart';
+import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
+import 'package:mind_games/widgets/result_screens/maximin_screen_widget.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => MatrixProvider())],
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => GameProvider(rows: 2, cols: 2),
+        ),
+      ],
       child: GameTheoryApp(),
     ),
   );
@@ -26,7 +32,12 @@ class GameTheoryApp extends StatelessWidget {
           elevation: 0,
         ),
       ),
-      home: HomeScreen(),
+      routes: {
+        "/home": (context) => HomeScreen(),
+        "/inputScreen": (context) => MatrixInputScreen(),
+        "/home/maximin": (context) => MaximinScreenWidget(),
+      },
+      home: MatrixInputScreen(),
     );
   }
 }

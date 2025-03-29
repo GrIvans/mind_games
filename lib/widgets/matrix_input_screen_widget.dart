@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mind_games/data/matrix.dart';
-import 'package:mind_games/data/matrix_provider.dart';
+import 'package:mind_games/data/game_provider.dart';
 import 'package:provider/provider.dart';
 
 class MatrixInputScreen extends StatefulWidget {
@@ -73,9 +73,9 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
   }
 
   void saveMatrix() {
-    context.read<MatrixProvider>().setMatrixA(Matrix.fromList(matrixA));
-    context.read<MatrixProvider>().setMatrixB(Matrix.fromList(matrixB));
-    Navigator.pop(context);
+    context.read<GameProvider>().setMatrixA(matrixA);
+    context.read<GameProvider>().setMatrixB(matrixB);
+    Navigator.pushReplacementNamed(context, "/home");
   }
 
   @override

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mind_games/data/matrix_provider.dart';
+import 'package:mind_games/data/game_provider.dart';
 import 'package:mind_games/widgets/algorithm_card_widget.dart';
 import 'package:mind_games/widgets/algorithm_result_screen_widget.dart';
 import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
+import 'package:mind_games/widgets/result_screens/maximin_screen_widget.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -15,8 +16,8 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    final matrixProvider = Provider.of<MatrixProvider>(context);
-    final List<List<num>> matrixA = matrixProvider.matrixA.list;
+    final gameProvider = Provider.of<GameProvider>(context);
+    final List<List<num>> matrixA = gameProvider.game.matrixA;
     return Scaffold(
       appBar: AppBar(
         title: Text('Теоретико-игровая модель'),
@@ -77,9 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AlgorithmResultScreen(
-                            algorithm: 'max-min',
-                          ),
+                          builder: (context) => MaximinScreenWidget(),
                         ),
                       );
                     },

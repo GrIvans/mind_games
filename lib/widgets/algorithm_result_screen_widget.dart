@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mind_games/data/matrix_provider.dart';
+import 'package:mind_games/data/game_provider.dart';
 import 'package:provider/provider.dart';
 
 class AlgorithmResultScreen extends StatefulWidget {
@@ -26,9 +26,9 @@ class AlgorithmResultScreenState extends State<AlgorithmResultScreen> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      var provider = context.read<MatrixProvider>();
-      matrixA = provider.matrixA.list;
-      matrixB = provider.matrixB.list;
+      var provider = context.read<GameProvider>();
+      matrixA = provider.game.matrixA;
+      matrixB = provider.game.matrixB;
     });
 
     switch (widget.algorithm) {
