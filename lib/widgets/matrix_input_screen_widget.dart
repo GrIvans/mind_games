@@ -17,7 +17,7 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
   List<List<num>> matrixB = [];
   List<List<TextEditingController>> controllersA = [];
   List<List<TextEditingController>> controllersB = [];
-
+  int screenIndex = 1;
   @override
   void initState() {
     super.initState();
@@ -70,7 +70,7 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
       }
     });
   }
-  
+
   void saveMatrix() {
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < cols; j++) {
@@ -81,6 +81,12 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
     context.read<GameProvider>().setMatrixB(matrixB);
     context.read<GameProvider>().setMatrixA(matrixA);
     Navigator.pushReplacementNamed(context, "/home");
+  }
+
+  void _changeScreen(bool? newValue) {
+    setState(() {
+      if (newValue != null) screenIndex = newValue ? 1 : 0;
+    });
   }
 
   @override
@@ -186,62 +192,138 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
             ),
 
             SizedBox(height: 4),
-
-            Card(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Матрица выигрышей первого игрока (A)',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: generateMatrixWidget(showMatrixB: false),
-                    ),
-                  ],
-                ),
-              ),
+            Row(
+              children: [
+                Checkbox(
+                    value: screenIndex == 0 ? false : true,
+                    onChanged: (value) => _changeScreen(value)),
+                Text("Использовать биматричную модель"),
+              ],
             ),
-            Card(
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    SizedBox(height: 16),
-                    Text(
-                      'Матрица выигрышей второго игрока (B)',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 16),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: generateMatrixWidget(showMatrixB: true),
-                    ),
-                  ],
-                ),
-              ),
+            IndexedStack(
+              index: screenIndex,
+              children: [
+                OneMatrixWidget(),
+                BiMatrixWidget(
+                    rows: rows,
+                    cols: cols,
+                    controllersB: controllersB,
+                    controllersA: controllersA),
+              ],
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-          onPressed: saveMatrix, label: Text("Сохранить")),
+      // floatingActionButton: FloatingActionButton.extended(
+      //     onPressed: saveMatrix, label: Text("Сохранить")),
     );
   }
+}
 
-  Widget generateMatrixWidget({required bool showMatrixB}) {
+class OneMatrixWidget extends StatelessWidget {
+  const OneMatrixWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+class BiMatrixWidget extends StatelessWidget {
+  const BiMatrixWidget({
+    super.key,
+    required this.rows,
+    required this.cols,
+    required this.controllersB,
+    required this.controllersA,
+  });
+
+  final int rows;
+  final int cols;
+  final List<List<TextEditingController>> controllersB;
+  final List<List<TextEditingController>> controllersA;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Card(
+          child: Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Матрица выигрышей первого игрока (A)',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: MatrixWidget(
+                      rows: rows,
+                      cols: cols,
+                      controllersB: controllersB,
+                      controllersA: controllersA,
+                      showMatrixB: false),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Card(
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Column(
+              children: [
+                SizedBox(height: 16),
+                Text(
+                  'Матрица выигрышей второго игрока (B)',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: MatrixWidget(
+                      rows: rows,
+                      cols: cols,
+                      controllersB: controllersB,
+                      controllersA: controllersA,
+                      showMatrixB: true),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class MatrixWidget extends StatelessWidget {
+  const MatrixWidget({
+    super.key,
+    required this.rows,
+    required this.cols,
+    required this.controllersB,
+    required this.controllersA,
+    required this.showMatrixB,
+  });
+
+  final int rows;
+  final int cols;
+  final List<List<TextEditingController>> controllersB;
+  final List<List<TextEditingController>> controllersA;
+  final bool showMatrixB;
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: List.generate(
         rows,
