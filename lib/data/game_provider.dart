@@ -11,12 +11,12 @@ class GameProvider with ChangeNotifier {
   MatrixGame get game => _game;
 
   void setMatrixA(List<List<num>> matrixA) {
-    _game.MatrixA = matrixA;
+    _game.matrixA = matrixA;
     notifyListeners();
   }
 
   void setMatrixB(List<List<num>> matrixB) {
-    _game.MatrixA = matrixB;
+    _game.matrixB = matrixB;
     notifyListeners();
   }
 }

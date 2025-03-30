@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:mind_games/data/matrix.dart';
 import 'package:mind_games/data/game_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +13,8 @@ class MatrixInputScreen extends StatefulWidget {
 class MatrixInputScreenState extends State<MatrixInputScreen> {
   int rows = 2;
   int cols = 2;
-  List<List<double>> matrixA = [];
-  List<List<double>> matrixB = [];
+  List<List<num>> matrixA = [];
+  List<List<num>> matrixB = [];
   List<List<TextEditingController>> controllersA = [];
   List<List<TextEditingController>> controllersB = [];
 
@@ -71,10 +70,16 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
       }
     });
   }
-
+  
   void saveMatrix() {
-    context.read<GameProvider>().setMatrixA(matrixA);
+    for (var i = 0; i < rows; i++) {
+      for (var j = 0; j < cols; j++) {
+        matrixA[i][j] = num.parse(controllersA[i][j].text);
+        matrixB[i][j] = num.parse(controllersB[i][j].text);
+      }
+    }
     context.read<GameProvider>().setMatrixB(matrixB);
+    context.read<GameProvider>().setMatrixA(matrixA);
     Navigator.pushReplacementNamed(context, "/home");
   }
 

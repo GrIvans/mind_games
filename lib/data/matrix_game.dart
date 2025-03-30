@@ -2,62 +2,75 @@ class MatrixGame {
   List<List<num>> _matrixA = [];
   List<List<num>> _matrixB = [];
 
-  MatrixGame(List<List<num>> matrixA, matrixB) {
+  MatrixGame(List<List<num>> matrixA, List<List<num>> matrixB) {
     _matrixA = matrixA;
     _matrixB = matrixB;
   }
 
   MatrixGame.generateMatrix(int rows, int cols, {num initialValue = 0}) {
-    var matrixA = List.generate(rows, (_) => List.filled(cols, initialValue));
-    var matrixB = List.generate(rows, (_) => List.filled(cols, initialValue));
-    MatrixGame(matrixA, matrixB);
+    _matrixA = List.generate(rows, (_) => List.filled(cols, initialValue));
+    _matrixB = List.generate(rows, (_) => List.filled(cols, initialValue));
   }
 
   List<List<num>> get matrixA => _matrixA;
   List<List<num>> get matrixB => _matrixB;
 
-  set MatrixA(List<List<num>> matrix) {
+  set matrixA(List<List<num>> matrix) {
     _matrixA = matrix;
   }
 
-  set MatrixB(List<List<num>> matrix) {
+  set matrixB(List<List<num>> matrix) {
     _matrixB = matrix;
   }
 
-  Map<String, dynamic> findMaximin() {
-    num maximinValue = double.negativeInfinity.toInt();
-    int maximinRow = -1;
+  List<List<bool>> findMaximin() {
+    // Создаем матрицу флагов с теми же размерами, что и _matrixA, заполненную false
+    List<List<bool>> highlights = List.generate(
+      _matrixA.length,
+      (i) => List.filled(_matrixA[i].length, false),
+    );
+
+    num maximinValue = double.negativeInfinity;
+    int maximinRow = -1, maximinCol = -1;
 
     for (int i = 0; i < _matrixA.length; i++) {
-      num rowMin = _matrixA[i].reduce((a, b) => a < b ? a : b);
+      // Приводим к double, чтобы избежать проблем с типами
+      num rowMin = _matrixA[i].cast<double>().reduce((a, b) => a < b ? a : b);
       if (rowMin > maximinValue) {
         maximinValue = rowMin;
         maximinRow = i;
+        maximinCol = _matrixA[i].indexOf(rowMin);
       }
     }
 
-    return {
-      'value': maximinValue,
-      'row': maximinRow,
-      'col': _matrixA[maximinRow].indexOf(maximinValue),
-    };
+    // Если нашли корректную строку и столбец, подсвечиваем найденную ячейку
+    if (maximinRow != -1 && maximinCol != -1) {
+      highlights[maximinRow][maximinCol] = true;
+    }
+
+    return highlights;
   }
 
-  Map<String, dynamic> findMinimax() {
-    num minimaxValue = double.infinity.toInt();
+  /// Для второго игрока: выделяем ячейку с минимаксом
+  List<List<bool>> findMinimax() {
+    // Создаем матрицу флагов с теми же размерами, что и _matrixB, заполненную false
+    List<List<bool>> highlights = List.generate(
+      _matrixB.length,
+      (i) => List.filled(_matrixB[i].length, false),
+    );
+
+    num minimaxValue = double.infinity;
     int minimaxRow = -1, minimaxCol = -1;
 
     for (int j = 0; j < _matrixB[0].length; j++) {
-      num colMax = double.negativeInfinity.toInt();
+      num colMax = double.negativeInfinity;
       int rowIndex = -1;
-
       for (int i = 0; i < _matrixB.length; i++) {
         if (_matrixB[i][j] > colMax) {
           colMax = _matrixB[i][j];
           rowIndex = i;
         }
       }
-
       if (colMax < minimaxValue) {
         minimaxValue = colMax;
         minimaxRow = rowIndex;
@@ -65,10 +78,10 @@ class MatrixGame {
       }
     }
 
-    return {
-      'value': minimaxValue,
-      'row': minimaxRow,
-      'col': minimaxCol,
-    };
+    if (minimaxRow != -1 && minimaxCol != -1) {
+      highlights[minimaxRow][minimaxCol] = true;
+    }
+
+    return highlights;
   }
 }
