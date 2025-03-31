@@ -78,6 +78,13 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
         matrixB[i][j] = num.parse(controllersB[i][j].text);
       }
     }
+    if (screenIndex == 0) {
+      for (var i = 0; i < rows; i++) {
+        for (var j = 0; j < cols; j++) {
+          matrixB[i][j] = 0 - matrixA[i][j];
+        }
+      }
+    }
     context.read<GameProvider>().setMatrixB(matrixB);
     context.read<GameProvider>().setMatrixA(matrixA);
     Navigator.pushReplacementNamed(context, "/home");
@@ -203,105 +210,109 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
             IndexedStack(
               index: screenIndex,
               children: [
-                OneMatrixWidget(),
-                BiMatrixWidget(
-                    rows: rows,
-                    cols: cols,
-                    controllersB: controllersB,
-                    controllersA: controllersA),
+                // одна матрица
+                Column(
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Матрица выигрышей',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: MatrixWidget(
+                                  rows: rows,
+                                  cols: cols,
+                                  controllersB: controllersB,
+                                  controllersA: controllersA,
+                                  showMatrixB: false),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // биматричные модели
+                Column(
+                  children: [
+                    Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Матрица выигрышей первого игрока (A)',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: MatrixWidget(
+                                  rows: rows,
+                                  cols: cols,
+                                  controllersB: controllersB,
+                                  controllersA: controllersA,
+                                  showMatrixB: false),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Card(
+                      child: Padding(
+                        padding: EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            SizedBox(height: 16),
+                            Text(
+                              'Матрица выигрышей второго игрока (B)',
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 16),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: MatrixWidget(
+                                  rows: rows,
+                                  cols: cols,
+                                  controllersB: controllersB,
+                                  controllersA: controllersA,
+                                  showMatrixB: true),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ],
         ),
       ),
-      // floatingActionButton: FloatingActionButton.extended(
-      //     onPressed: saveMatrix, label: Text("Сохранить")),
-    );
-  }
-}
-
-class OneMatrixWidget extends StatelessWidget {
-  const OneMatrixWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Placeholder();
-  }
-}
-
-class BiMatrixWidget extends StatelessWidget {
-  const BiMatrixWidget({
-    super.key,
-    required this.rows,
-    required this.cols,
-    required this.controllersB,
-    required this.controllersA,
-  });
-
-  final int rows;
-  final int cols;
-  final List<List<TextEditingController>> controllersB;
-  final List<List<TextEditingController>> controllersA;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Card(
-          child: Padding(
-            padding: EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Матрица выигрышей первого игрока (A)',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: MatrixWidget(
-                      rows: rows,
-                      cols: cols,
-                      controllersB: controllersB,
-                      controllersA: controllersA,
-                      showMatrixB: false),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Card(
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                SizedBox(height: 16),
-                Text(
-                  'Матрица выигрышей второго игрока (B)',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 16),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: MatrixWidget(
-                      rows: rows,
-                      cols: cols,
-                      controllersB: controllersB,
-                      controllersA: controllersA,
-                      showMatrixB: true),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: saveMatrix,
+        label: Text("Сохранить"),
+      ),
     );
   }
 }
