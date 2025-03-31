@@ -74,6 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   AlgorithmCard(
                     title: 'Максимин/\nМинимакс',
                     icon: Icons.arrow_outward,
+                    enabled: gameProvider.game.singleMatrixGame,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -86,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   AlgorithmCard(
                     title: 'Доминируемые стратегии',
                     icon: Icons.delete_outline,
+                    enabled: true,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -100,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   AlgorithmCard(
                     title: 'Равновесия Нэша',
                     icon: Icons.balance,
+                    enabled: true,
                     onTap: () {
                       Navigator.push(
                         context,
@@ -114,6 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   AlgorithmCard(
                     title: 'Смешанные стратегии',
                     icon: Icons.shuffle,
+                    enabled: true,
                     onTap: () {
                       Navigator.push(
                         context,

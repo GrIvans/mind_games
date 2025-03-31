@@ -85,6 +85,7 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
         }
       }
     }
+    context.read<GameProvider>().setGameType(screenIndex == 0 ? true : false);
     context.read<GameProvider>().setMatrixB(matrixB);
     context.read<GameProvider>().setMatrixA(matrixA);
     Navigator.pushReplacementNamed(context, "/home");

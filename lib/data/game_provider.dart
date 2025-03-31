@@ -15,6 +15,11 @@ class GameProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void setGameType(bool gameType) {
+    _game.singleMatrixGame = gameType;
+    notifyListeners();
+  }
+
   void setMatrixB(List<List<num>> matrixB) {
     _game.matrixB = matrixB;
     notifyListeners();

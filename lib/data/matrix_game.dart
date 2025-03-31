@@ -1,6 +1,7 @@
 class MatrixGame {
   List<List<num>> _matrixA = [];
   List<List<num>> _matrixB = [];
+  bool singleMatrixGame = false;
 
   MatrixGame(List<List<num>> matrixA, List<List<num>> matrixB) {
     _matrixA = matrixA;
@@ -59,19 +60,19 @@ class MatrixGame {
   Map<String, dynamic> findMinimax() {
     // Создаем матрицу флагов с теми же размерами, что и _matrixB, заполненную false
     List<List<bool>> highlights = List.generate(
-      _matrixB.length,
-      (i) => List.filled(_matrixB[i].length, false),
+      _matrixA.length,
+      (i) => List.filled(_matrixA[i].length, false),
     );
 
     num minimaxValue = double.infinity;
     int minimaxRow = -1, minimaxCol = -1;
 
-    for (int j = 0; j < _matrixB[0].length; j++) {
+    for (int j = 0; j < _matrixA[0].length; j++) {
       num colMax = double.negativeInfinity;
       int rowIndex = -1;
-      for (int i = 0; i < _matrixB.length; i++) {
-        if (_matrixB[i][j] > colMax) {
-          colMax = _matrixB[i][j];
+      for (int i = 0; i < _matrixA.length; i++) {
+        if (_matrixA[i][j] > colMax) {
+          colMax = _matrixA[i][j];
           rowIndex = i;
         }
       }

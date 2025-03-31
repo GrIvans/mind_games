@@ -4,11 +4,14 @@ class AlgorithmCard extends StatelessWidget {
   final String title;
   final IconData icon;
   final Function onTap;
+  final bool enabled;
 
-  const AlgorithmCard({super.key, 
+  const AlgorithmCard({
+    super.key,
     required this.title,
     required this.icon,
     required this.onTap,
+    required this.enabled,
   });
 
   @override
@@ -16,7 +19,7 @@ class AlgorithmCard extends StatelessWidget {
     return Card(
       elevation: 2,
       child: InkWell(
-        onTap: () => onTap(),
+        onTap: enabled ? () => onTap() : null,
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
