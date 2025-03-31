@@ -111,7 +111,7 @@ class MatrixGame {
     for (var mA in bestResponseA) {
       for (var mB in bestResponseB) {
         if (mA["row"] == mB["row"] && mA["col"] == mB["col"]) {
-          highlighted[mA["row"]][mA["col"]] == true;
+          highlighted[mA["row"]][mA["col"]] = true;
         }
       }
     }
@@ -139,7 +139,7 @@ class MatrixGame {
         }
       }
 
-      result.add({"value": maxVal, "row": maxRow, "column": col});
+      result.add({"value": maxVal, "row": maxRow, "col": col});
     }
 
     return result;
@@ -165,7 +165,7 @@ class MatrixGame {
         }
       }
 
-      result.add({"value": maxVal, "row": row, "column": maxCol});
+      result.add({"value": maxVal, "row": row, "col": maxCol});
     }
 
     return result;
