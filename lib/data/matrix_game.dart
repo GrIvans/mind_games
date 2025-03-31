@@ -23,7 +23,7 @@ class MatrixGame {
     _matrixB = matrix;
   }
 
-  List<List<bool>> findMaximin() {
+  Map<String, dynamic> findMaximin() {
     // Создаем матрицу флагов с теми же размерами, что и _matrixA, заполненную false
     List<List<bool>> highlights = List.generate(
       _matrixA.length,
@@ -34,8 +34,7 @@ class MatrixGame {
     int maximinRow = -1, maximinCol = -1;
 
     for (int i = 0; i < _matrixA.length; i++) {
-      // Приводим к double, чтобы избежать проблем с типами
-      num rowMin = _matrixA[i].cast<double>().reduce((a, b) => a < b ? a : b);
+      num rowMin = _matrixA[i].cast<num>().reduce((a, b) => a < b ? a : b);
       if (rowMin > maximinValue) {
         maximinValue = rowMin;
         maximinRow = i;
@@ -48,11 +47,16 @@ class MatrixGame {
       highlights[maximinRow][maximinCol] = true;
     }
 
-    return highlights;
+    return {
+      "value": maximinValue,
+      "row": maximinRow,
+      "col": maximinCol,
+      "highlights": highlights,
+    };
   }
 
   /// Для второго игрока: выделяем ячейку с минимаксом
-  List<List<bool>> findMinimax() {
+  Map<String, dynamic> findMinimax() {
     // Создаем матрицу флагов с теми же размерами, что и _matrixB, заполненную false
     List<List<bool>> highlights = List.generate(
       _matrixB.length,
@@ -82,6 +86,88 @@ class MatrixGame {
       highlights[minimaxRow][minimaxCol] = true;
     }
 
-    return highlights;
+    return {
+      "value": minimaxValue,
+      "row": minimaxRow,
+      "col": minimaxCol,
+      "highlights": highlights,
+    };
+  }
+
+  Map<String, List<bool>> findStrictlyDominatedStrategies() {
+    int rows = matrixA.length;
+    int cols = matrixA[0].length;
+
+    List<bool> dominatedRows = List.filled(rows, false);
+    List<bool> dominatedCols = List.filled(cols, false);
+
+    bool changed = true;
+
+    while (changed) {
+      changed = false;
+
+      // Проверяем строки (стратегии первого игрока)
+      for (int i = 0; i < rows; i++) {
+        if (dominatedRows[i]) continue; // Пропускаем уже отмеченные
+
+        for (int j = 0; j < rows; j++) {
+          if (i == j || dominatedRows[j])
+            continue; // Не сравниваем с собой или отмеченными
+
+          bool isDominated = true;
+
+          // Проверяем, строго ли доминирует стратегия j над i
+          for (int k = 0; k < cols; k++) {
+            if (dominatedCols[k]) continue; // Пропускаем отмеченные столбцы
+
+            if (matrixA[i][k] >= matrixA[j][k]) {
+              isDominated = false;
+              break;
+            }
+          }
+
+          if (isDominated) {
+            dominatedRows[i] = true;
+            changed = true;
+            break;
+          }
+        }
+      }
+
+      // Проверяем столбцы (стратегии второго игрока)
+      for (int j = 0; j < cols; j++) {
+        if (dominatedCols[j]) continue; // Пропускаем уже отмеченные
+
+        for (int k = 0; k < cols; k++) {
+          if (j == k || dominatedCols[k])
+            continue; // Не сравниваем с собой или отмеченными
+
+          bool isDominated = true;
+
+          // Проверяем, строго ли доминирует стратегия k над j
+          for (int i = 0; i < rows; i++) {
+            if (dominatedRows[i]) continue; // Пропускаем отмеченные строки
+
+            if (matrixB[i][j] >= matrixB[i][k]) {
+              isDominated = false;
+              break;
+            }
+          }
+
+          if (isDominated) {
+            dominatedCols[j] = true;
+            changed = true;
+            break;
+          }
+        }
+      }
+    }
+
+    return {
+      'rows':
+          dominatedRows, // true - доминируемые строки (стратегии первого игрока)
+      'cols':
+          dominatedCols // true - доминируемые столбцы (стратегии второго игрока)
+    };
   }
 }

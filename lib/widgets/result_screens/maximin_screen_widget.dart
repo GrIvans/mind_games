@@ -30,20 +30,20 @@ class _MaximinScreenWidgetState extends State<MaximinScreenWidget> {
                 ),
                 _HighlightedMatrixWidget(
                   matrix: provider.game.matrixA,
-                  highlightCells: provider.game.findMaximin(),
+                  highlightCells: provider.game.findMaximin()["highlights"],
                 ),
                 Text(
-                    "Максимин: ${provider.game.findMaximin()} (позиция: [${provider.game.findMaximin()}, ${provider.game.findMaximin()}])"),
+                    "Максимин: ${provider.game.findMaximin()["value"]} (позиция: [${provider.game.findMaximin()["col"]}, ${provider.game.findMaximin()["row"]}])"),
                 const SizedBox(height: 20),
                 const Text("Матрица второго игрока",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 _HighlightedMatrixWidget(
                   matrix: provider.game.matrixB,
-                  highlightCells: provider.game.findMinimax(),
+                  highlightCells: provider.game.findMinimax()["highlights"],
                 ),
                 Text(
-                    "Минимакс: ${provider.game.findMinimax()} (позиция: [${provider.game.findMinimax()}, ${provider.game.findMinimax()}])"),
+                    "Минимакс: ${provider.game.findMinimax()["value"]} (позиция: [${provider.game.findMinimax()["col"]}, ${provider.game.findMinimax()["row"]}])"),
               ],
             ),
           ),
