@@ -2,20 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:mind_games/data/game_provider.dart';
 import 'package:provider/provider.dart';
 
-class MaximinScreenWidget extends StatefulWidget {
-  const MaximinScreenWidget({super.key});
+class NashBalanceScreenWidget extends StatelessWidget {
+  const NashBalanceScreenWidget({super.key});
 
-  @override
-  State<MaximinScreenWidget> createState() => _MaximinScreenWidgetState();
-}
-
-class _MaximinScreenWidgetState extends State<MaximinScreenWidget> {
   @override
   Widget build(BuildContext context) {
     final provider = Provider.of<GameProvider>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Максимин и Минимакс"),
+        title: Text("Равновесие по Нэшу"),
       ),
       body: ListView(
         children: [
@@ -30,20 +25,18 @@ class _MaximinScreenWidgetState extends State<MaximinScreenWidget> {
                 ),
                 _HighlightedMatrixWidget(
                   matrix: provider.game.matrixA,
-                  highlightCells: provider.game.findMaximin()["highlights"],
+                  highlightCells:
+                      provider.game.findPureNashEquilibria()["highlights"],
                 ),
-                Text(
-                    "Максимин: ${provider.game.findMaximin()["value"]} (позиция: [${provider.game.findMaximin()["col"]}, ${provider.game.findMaximin()["row"]}])"),
                 const SizedBox(height: 20),
                 const Text("Матрица второго игрока",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 _HighlightedMatrixWidget(
                   matrix: provider.game.matrixA,
-                  highlightCells: provider.game.findMinimax()["highlights"],
+                  highlightCells:
+                      provider.game.findPureNashEquilibria()["highlights"],
                 ),
-                Text(
-                    "Минимакс: ${provider.game.findMinimax()["value"]} (позиция: [${provider.game.findMinimax()["col"]}, ${provider.game.findMinimax()["row"]}])"),
               ],
             ),
           ),

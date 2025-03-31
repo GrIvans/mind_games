@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class MatrixGame {
   List<List<num>> _matrixA = [];
   List<List<num>> _matrixB = [];
@@ -95,80 +97,77 @@ class MatrixGame {
     };
   }
 
-  Map<String, List<bool>> findStrictlyDominatedStrategies() {
-    int rows = matrixA.length;
-    int cols = matrixA[0].length;
+  Map<String, dynamic> findPureNashEquilibria() {
+    int numRows = _matrixA.length;
+    int numCols = _matrixA[0].length;
 
-    List<bool> dominatedRows = List.filled(rows, false);
-    List<bool> dominatedCols = List.filled(cols, false);
+    var bestResponseA = findColumnMaxima(matrixA);
+    var bestResponseB = findRowMaxima(matrixB);
 
-    bool changed = true;
+    // 3. Найти ячейки, где оба ответа являются наилучшими
+    var highlighted =
+        List.generate(numRows, (_) => List.filled(numCols, false));
 
-    while (changed) {
-      changed = false;
-
-      // Проверяем строки (стратегии первого игрока)
-      for (int i = 0; i < rows; i++) {
-        if (dominatedRows[i]) continue; // Пропускаем уже отмеченные
-
-        for (int j = 0; j < rows; j++) {
-          if (i == j || dominatedRows[j])
-            continue; // Не сравниваем с собой или отмеченными
-
-          bool isDominated = true;
-
-          // Проверяем, строго ли доминирует стратегия j над i
-          for (int k = 0; k < cols; k++) {
-            if (dominatedCols[k]) continue; // Пропускаем отмеченные столбцы
-
-            if (matrixA[i][k] >= matrixA[j][k]) {
-              isDominated = false;
-              break;
-            }
-          }
-
-          if (isDominated) {
-            dominatedRows[i] = true;
-            changed = true;
-            break;
-          }
-        }
-      }
-
-      // Проверяем столбцы (стратегии второго игрока)
-      for (int j = 0; j < cols; j++) {
-        if (dominatedCols[j]) continue; // Пропускаем уже отмеченные
-
-        for (int k = 0; k < cols; k++) {
-          if (j == k || dominatedCols[k])
-            continue; // Не сравниваем с собой или отмеченными
-
-          bool isDominated = true;
-
-          // Проверяем, строго ли доминирует стратегия k над j
-          for (int i = 0; i < rows; i++) {
-            if (dominatedRows[i]) continue; // Пропускаем отмеченные строки
-
-            if (matrixB[i][j] >= matrixB[i][k]) {
-              isDominated = false;
-              break;
-            }
-          }
-
-          if (isDominated) {
-            dominatedCols[j] = true;
-            changed = true;
-            break;
-          }
+    for (var mA in bestResponseA) {
+      for (var mB in bestResponseB) {
+        if (mA["row"] == mB["row"] && mA["col"] == mB["col"]) {
+          highlighted[mA["row"]][mA["col"]] == true;
         }
       }
     }
 
-    return {
-      'rows':
-          dominatedRows, // true - доминируемые строки (стратегии первого игрока)
-      'cols':
-          dominatedCols // true - доминируемые столбцы (стратегии второго игрока)
-    };
+    return {"highlights": highlighted};
+  }
+
+  List<Map<String, dynamic>> findColumnMaxima(List<List<num>> matrix) {
+    if (matrix.isEmpty || matrix[0].isEmpty) {
+      throw ArgumentError("Матрица не должна быть пустой");
+    }
+
+    int rowCount = matrix.length;
+    int colCount = matrix[0].length;
+    List<Map<String, dynamic>> result = [];
+
+    for (int col = 0; col < colCount; col++) {
+      num maxVal = matrix[0][col];
+      int maxRow = 0;
+
+      for (int row = 1; row < rowCount; row++) {
+        if (matrix[row][col] > maxVal) {
+          maxVal = matrix[row][col];
+          maxRow = row;
+        }
+      }
+
+      result.add({"value": maxVal, "row": maxRow, "column": col});
+    }
+
+    return result;
+  }
+
+  List<Map<String, dynamic>> findRowMaxima(List<List<num>> matrix) {
+    if (matrix.isEmpty || matrix[0].isEmpty) {
+      throw ArgumentError("Матрица не должна быть пустой");
+    }
+
+    int rowCount = matrix.length;
+    int colCount = matrix[0].length;
+    List<Map<String, dynamic>> result = [];
+
+    for (int row = 0; row < rowCount; row++) {
+      num maxVal = matrix[row][0];
+      int maxCol = 0;
+
+      for (int col = 1; col < colCount; col++) {
+        if (matrix[row][col] > maxVal) {
+          maxVal = matrix[row][col];
+          maxCol = col;
+        }
+      }
+
+      result.add({"value": maxVal, "row": row, "column": maxCol});
+    }
+
+    return result;
   }
 }

@@ -4,6 +4,7 @@ import 'package:mind_games/widgets/algorithm_card_widget.dart';
 import 'package:mind_games/widgets/algorithm_result_screen_widget.dart';
 import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
 import 'package:mind_games/widgets/result_screens/maximin_screen_widget.dart';
+import 'package:mind_games/widgets/result_screens/nash_balance_screen_widget.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -107,9 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => AlgorithmResultScreen(
-                            algorithm: 'nash',
-                          ),
+                          builder: (context) => NashBalanceScreenWidget(),
                         ),
                       );
                     },
