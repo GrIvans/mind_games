@@ -232,11 +232,10 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: MatrixWidget(
-                                  rows: rows,
-                                  cols: cols,
-                                  controllersB: controllersB,
-                                  controllersA: controllersA,
-                                  showMatrixB: false),
+                                rows: rows,
+                                cols: cols,
+                                controllers: controllersA,
+                              ),
                             ),
                           ],
                         ),
@@ -265,11 +264,10 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: MatrixWidget(
-                                  rows: rows,
-                                  cols: cols,
-                                  controllersB: controllersB,
-                                  controllersA: controllersA,
-                                  showMatrixB: false),
+                                rows: rows,
+                                cols: cols,
+                                controllers: controllersA,
+                              ),
                             ),
                           ],
                         ),
@@ -293,11 +291,10 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: MatrixWidget(
-                                  rows: rows,
-                                  cols: cols,
-                                  controllersB: controllersB,
-                                  controllersA: controllersA,
-                                  showMatrixB: true),
+                                rows: rows,
+                                cols: cols,
+                                controllers: controllersB,
+                              ),
                             ),
                           ],
                         ),
@@ -323,16 +320,12 @@ class MatrixWidget extends StatelessWidget {
     super.key,
     required this.rows,
     required this.cols,
-    required this.controllersB,
-    required this.controllersA,
-    required this.showMatrixB,
+    required this.controllers,
   });
 
   final int rows;
   final int cols;
-  final List<List<TextEditingController>> controllersB;
-  final List<List<TextEditingController>> controllersA;
-  final bool showMatrixB;
+  final List<List<TextEditingController>> controllers;
 
   @override
   Widget build(BuildContext context) {
@@ -357,8 +350,7 @@ class MatrixWidget extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(4.0),
                   child: TextField(
-                    controller:
-                        showMatrixB ? controllersB[i][j] : controllersA[i][j],
+                    controller: controllers[i][j],
                     textAlign: TextAlign.center,
                     keyboardType:
                         TextInputType.numberWithOptions(decimal: true),
