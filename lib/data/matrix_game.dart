@@ -1,5 +1,3 @@
-import 'package:flutter/material.dart';
-
 class MatrixGame {
   List<List<num>> _matrixA = [];
   List<List<num>> _matrixB = [];
@@ -27,7 +25,6 @@ class MatrixGame {
   }
 
   Map<String, dynamic> findMaximin() {
-    // Создаем матрицу флагов с теми же размерами, что и _matrixA, заполненную false
     List<List<bool>> highlights = List.generate(
       _matrixA.length,
       (i) => List.filled(_matrixA[i].length, false),
@@ -45,7 +42,6 @@ class MatrixGame {
       }
     }
 
-    // Если нашли корректную строку и столбец, подсвечиваем найденную ячейку
     if (maximinRow != -1 && maximinCol != -1) {
       highlights[maximinRow][maximinCol] = true;
     }
@@ -58,9 +54,7 @@ class MatrixGame {
     };
   }
 
-  /// Для второго игрока: выделяем ячейку с минимаксом
   Map<String, dynamic> findMinimax() {
-    // Создаем матрицу флагов с теми же размерами, что и _matrixB, заполненную false
     List<List<bool>> highlights = List.generate(
       _matrixA.length,
       (i) => List.filled(_matrixA[i].length, false),
@@ -104,7 +98,6 @@ class MatrixGame {
     var bestResponseA = findColumnMaxima(matrixA);
     var bestResponseB = findRowMaxima(matrixB);
 
-    // 3. Найти ячейки, где оба ответа являются наилучшими
     var highlighted =
         List.generate(numRows, (_) => List.filled(numCols, false));
 
@@ -130,16 +123,18 @@ class MatrixGame {
 
     for (int col = 0; col < colCount; col++) {
       num maxVal = matrix[0][col];
-      int maxRow = 0;
 
       for (int row = 1; row < rowCount; row++) {
         if (matrix[row][col] > maxVal) {
           maxVal = matrix[row][col];
-          maxRow = row;
         }
       }
 
-      result.add({"value": maxVal, "row": maxRow, "col": col});
+      for (int row = 0; row < rowCount; row++) {
+        if (matrix[row][col] == maxVal) {
+          result.add({"value": maxVal, "row": row, "col": col});
+        }
+      }
     }
 
     return result;
@@ -156,18 +151,19 @@ class MatrixGame {
 
     for (int row = 0; row < rowCount; row++) {
       num maxVal = matrix[row][0];
-      int maxCol = 0;
 
       for (int col = 1; col < colCount; col++) {
         if (matrix[row][col] > maxVal) {
           maxVal = matrix[row][col];
-          maxCol = col;
         }
       }
 
-      result.add({"value": maxVal, "row": row, "col": maxCol});
+      for (int col = 0; col < colCount; col++) {
+        if (matrix[row][col] == maxVal) {
+          result.add({"value": maxVal, "row": row, "col": col});
+        }
+      }
     }
-
     return result;
   }
 }

@@ -33,7 +33,7 @@ class NashBalanceScreenWidget extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 _HighlightedMatrixWidget(
-                  matrix: provider.game.matrixA,
+                  matrix: provider.game.matrixB,
                   highlightCells:
                       provider.game.findPureNashEquilibria()["highlights"],
                 ),
