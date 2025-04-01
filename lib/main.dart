@@ -3,6 +3,7 @@ import 'package:mind_games/data/game_provider.dart';
 import 'package:mind_games/widgets/home_screen_widget.dart';
 import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
 import 'package:mind_games/widgets/result_screens/maximin_screen_widget.dart';
+import 'package:mind_games/widgets/result_screens/nash_balance_screen_widget.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -34,8 +35,9 @@ class GameTheoryApp extends StatelessWidget {
       ),
       routes: {
         "/home": (context) => HomeScreen(),
-        "/inputScreen": (context) => MatrixInputScreen(),
+        "inputScreen": (context) => MatrixInputScreen(),
         "/home/maximin": (context) => MaximinScreenWidget(),
+        "/home/nash_balance": (context) => NashBalanceScreenWidget(),
       },
       home: MatrixInputScreen(),
     );

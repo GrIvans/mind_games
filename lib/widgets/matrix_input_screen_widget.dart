@@ -11,28 +11,57 @@ class MatrixInputScreen extends StatefulWidget {
 }
 
 class MatrixInputScreenState extends State<MatrixInputScreen> {
-  int rows = 2;
-  int cols = 2;
-  List<List<num>> matrixA = [];
-  List<List<num>> matrixB = [];
-  List<List<TextEditingController>> controllersA = [];
-  List<List<TextEditingController>> controllersB = [];
-  int screenIndex = 1;
+  late int rows;
+  late int cols;
+  late List<List<num>> matrixA;
+  late List<List<num>> matrixB;
+  late List<List<TextEditingController>> controllersA;
+  late List<List<TextEditingController>> controllersB;
+  // int screenIndex = 1;
+  late int screenIndex;
+
+  bool _isInitialized = false;
+
   @override
-  void initState() {
-    super.initState();
-    initializeMatrices();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      final gameProvider = Provider.of<GameProvider>(context, listen: false);
+
+      final initialMatrixA = gameProvider.game.matrixA;
+      final initialMatrixB = gameProvider.game.matrixB;
+      screenIndex = gameProvider.game.singleMatrixGame ? 0 : 1;
+
+      if (initialMatrixA.isNotEmpty && initialMatrixA[0].isNotEmpty) {
+        rows = initialMatrixA.length;
+        cols = initialMatrixA[0].length;
+        matrixA = List.generate(rows, (i) => List<num>.from(initialMatrixA[i]));
+
+        if (initialMatrixB.length == rows && initialMatrixB[0].length == cols) {
+          matrixB =
+              List.generate(rows, (i) => List<num>.from(initialMatrixB[i]));
+        } else {
+          matrixB = List.generate(rows, (_) => List.filled(cols, 0.0));
+        }
+      } else {
+        rows = 2;
+        cols = 2;
+        matrixA = List.generate(rows, (_) => List.filled(cols, 0.0));
+        matrixB = List.generate(rows, (_) => List.filled(cols, 0.0));
+      }
+
+      initializeControllers();
+
+      _isInitialized = true;
+    }
   }
 
-  void initializeMatrices() {
-    matrixA = List.generate(rows, (_) => List.filled(cols, 0.0));
-    matrixB = List.generate(rows, (_) => List.filled(cols, 0.0));
-
+  void initializeControllers() {
     controllersA = List.generate(
       rows,
       (i) => List.generate(
         cols,
-        (j) => TextEditingController(text: '0.0'),
+        (j) => TextEditingController(text: matrixA[i][j].toString()),
       ),
     );
 
@@ -40,7 +69,8 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
       rows,
       (i) => List.generate(
         cols,
-        (j) => TextEditingController(text: '0.0'),
+        (j) => TextEditingController(
+            text: (j < matrixB[i].length ? matrixB[i][j] : 0.0).toString()),
       ),
     );
   }
@@ -49,21 +79,28 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
     setState(() {
       rows = newRows;
       cols = newCols;
-      initializeMatrices();
+      matrixA = List.generate(rows, (_) => List.filled(cols, 0.0));
+      matrixB = List.generate(rows, (_) => List.filled(cols, 0.0));
+      initializeControllers();
     });
   }
 
   void generateRandomData() {
     setState(() {
       Random random = Random();
+      if (matrixA.length != rows ||
+          (matrixA.isNotEmpty && matrixA[0].length != cols)) {
+        matrixA = List.generate(rows, (_) => List.filled(cols, 0.0));
+        matrixB = List.generate(rows, (_) => List.filled(cols, 0.0));
+        initializeControllers();
+      }
+
       for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
           double valueA = (random.nextDouble() * 10).roundToDouble();
           double valueB = (random.nextDouble() * 10).roundToDouble();
-
           matrixA[i][j] = valueA;
           matrixB[i][j] = valueB;
-
           controllersA[i][j].text = valueA.toString();
           controllersB[i][j].text = valueB.toString();
         }
@@ -74,10 +111,11 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
   void saveMatrix() {
     for (var i = 0; i < rows; i++) {
       for (var j = 0; j < cols; j++) {
-        matrixA[i][j] = num.parse(controllersA[i][j].text);
-        matrixB[i][j] = num.parse(controllersB[i][j].text);
+        matrixA[i][j] = num.tryParse(controllersA[i][j].text) ?? 0.0;
+        matrixB[i][j] = num.tryParse(controllersB[i][j].text) ?? 0.0;
       }
     }
+
     if (screenIndex == 0) {
       for (var i = 0; i < rows; i++) {
         for (var j = 0; j < cols; j++) {
@@ -85,9 +123,12 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
         }
       }
     }
-    context.read<GameProvider>().setGameType(screenIndex == 0 ? true : false);
-    context.read<GameProvider>().setMatrixB(matrixB);
-    context.read<GameProvider>().setMatrixA(matrixA);
+
+    final gameProvider = context.read<GameProvider>();
+    gameProvider.setGameType(screenIndex == 0 ? true : false);
+    gameProvider.setMatrixA(List.generate(rows, (i) => List.from(matrixA[i])));
+    gameProvider.setMatrixB(List.generate(rows, (i) => List.from(matrixB[i])));
+
     Navigator.pushReplacementNamed(context, "/home");
   }
 
@@ -95,6 +136,21 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
     setState(() {
       if (newValue != null) screenIndex = newValue ? 1 : 0;
     });
+  }
+
+  @override
+  void dispose() {
+    for (int i = 0; i < controllersA.length; i++) {
+      for (int j = 0; j < controllersA[i].length; j++) {
+        controllersA[i][j].dispose();
+      }
+    }
+    for (int i = 0; i < controllersB.length; i++) {
+      for (int j = 0; j < controllersB[i].length; j++) {
+        controllersB[i][j].dispose();
+      }
+    }
+    super.dispose();
   }
 
   @override
@@ -300,6 +356,9 @@ class MatrixInputScreenState extends State<MatrixInputScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(
+                      height: 100,
+                    )
                   ],
                 ),
               ],

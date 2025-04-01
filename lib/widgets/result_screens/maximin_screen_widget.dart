@@ -39,7 +39,7 @@ class _MaximinScreenWidgetState extends State<MaximinScreenWidget> {
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 _HighlightedMatrixWidget(
-                  matrix: provider.game.matrixA,
+                  matrix: provider.game.matrixB,
                   highlightCells: provider.game.findMinimax()["highlights"],
                 ),
                 Text(
