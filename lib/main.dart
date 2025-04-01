@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mind_games/data/game_provider.dart';
-import 'package:mind_games/widgets/home_screen_widget.dart';
+import 'package:mind_games/widgets/home_screen/home_screen_widget.dart';
 import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
 import 'package:mind_games/widgets/result_screens/maximin_screen_widget.dart';
 import 'package:mind_games/widgets/result_screens/nash_balance_screen_widget.dart';
@@ -27,6 +27,9 @@ class GameTheoryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Теория игр',
       theme: ThemeData(
+        brightness: context.watch<GameProvider>().isDarkThemeActivated
+            ? Brightness.dark
+            : Brightness.light,
         primarySwatch: Colors.indigo,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         appBarTheme: AppBarTheme(
