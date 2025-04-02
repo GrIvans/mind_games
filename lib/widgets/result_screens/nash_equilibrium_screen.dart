@@ -95,67 +95,67 @@ class _NashEquilibriumScreenState extends State<NashEquilibriumScreen> {
           maxLines: 2,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Матрица для игрока A",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Матрица для игрока A",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-              child: MatrixWidget(
-                rows: 2,
-                cols: 2,
-                controllers: controllersA,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Матрица для игрока B",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: MatrixWidget(
-                rows: 2,
-                cols: 2,
-                controllers: controllersB,
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                FilledButton(
-                  onPressed: findEquilibrium,
-                  child: Text("Найти равновесие Нэша"),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
                 ),
-                SizedBox(width: 20),
-                Expanded(
-                  child: ElevatedButton(
+                child: MatrixWidget(
+                  rows: 2,
+                  cols: 2,
+                  controllers: controllersA,
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Матрица для игрока B",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: MatrixWidget(
+                  rows: 2,
+                  cols: 2,
+                  controllers: controllersB,
+                ),
+              ),
+              SizedBox(height: 20),
+              Column(
+                children: [
+                  FilledButton(
+                    onPressed: findEquilibrium,
+                    child: Text("Найти равновесие Нэша"),
+                  ),
+                  SizedBox(width: 20),
+                  ElevatedButton(
                       onPressed: _generateRandomData,
                       child: Text("Сгенерировать значения")),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Text(
-              _answer,
-              textAlign: TextAlign.start,
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
+                ],
+              ),
+              SizedBox(height: 20),
+              Text(
+                _answer,
+                textAlign: TextAlign.start,
+                style: TextStyle(fontSize: 18),
+              ),
+            ],
+          ),
         ),
       ),
     );

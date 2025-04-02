@@ -35,7 +35,7 @@ class GameTheoryApp extends StatelessWidget {
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        primarySwatch: Colors.cyan,
+        primarySwatch: Colors.indigo,
         primaryColor: Colors.indigo.shade300,
       ),
       themeMode: context.watch<GameProvider>().isDarkThemeActivated
