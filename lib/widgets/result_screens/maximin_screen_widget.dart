@@ -25,7 +25,7 @@ class _MaximinScreenWidgetState extends State<MaximinScreenWidget> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Text(
-                  "Матрица первого игрока",
+                  "Максимин",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 _HighlightedMatrixWidget(
@@ -35,11 +35,11 @@ class _MaximinScreenWidgetState extends State<MaximinScreenWidget> {
                 Text(
                     "Максимин: ${provider.game.findMaximin()["value"]} (позиция: [${provider.game.findMaximin()["col"]}, ${provider.game.findMaximin()["row"]}])"),
                 const SizedBox(height: 20),
-                const Text("Матрица второго игрока",
+                const Text("Минимакс",
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                 _HighlightedMatrixWidget(
-                  matrix: provider.game.matrixB,
+                  matrix: provider.game.matrixA,
                   highlightCells: provider.game.findMinimax()["highlights"],
                 ),
                 Text(

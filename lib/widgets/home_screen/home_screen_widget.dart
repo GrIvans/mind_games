@@ -5,6 +5,7 @@ import 'package:mind_games/widgets/home_screen/settings_screen_widget.dart';
 import 'package:mind_games/widgets/matrix_input_screen_widget.dart';
 import 'package:mind_games/widgets/result_screens/maximin_screen_widget.dart';
 import 'package:mind_games/widgets/result_screens/nash_balance_screen_widget.dart';
+import 'package:mind_games/widgets/result_screens/nash_equilibrium_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -52,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Настройки',
           ),
         ],
+        currentIndex: currentIndex,
         onTap: (index) => _changeScreen(index),
       ),
     );
@@ -130,12 +132,25 @@ class MainTabWidget extends StatelessWidget {
                 AlgorithmCard(
                   title: 'Равновесия Нэша',
                   icon: Icons.balance,
-                  enabled: true,
+                  enabled: !gameProvider.game.singleMatrixGame,
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => NashBalanceScreenWidget(),
+                      ),
+                    );
+                  },
+                ),
+                AlgorithmCard(
+                  title: 'Равновесия Нэша в смешанных стратегиях',
+                  icon: Icons.balance,
+                  enabled: true,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NashEquilibriumScreen(),
                       ),
                     );
                   },
