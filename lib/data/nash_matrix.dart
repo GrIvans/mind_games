@@ -1,46 +1,44 @@
-class NashMatrix {
-  late List<List<num>> matrixA;
-  late List<List<num>> matrixB;
+import 'dart:math';
 
+class NashMatrix {
+  late List<List<double>> matrixA;
+  late List<List<double>> matrixB;
   NashMatrix.zeroMatrix() {
-    matrixA = List.generate(2, (_) => List.filled(2, 0));
-    matrixB = List.generate(2, (_) => List.filled(2, 0));
-    NashMatrix(matrixA, matrixB);
+    matrixA = List.generate(2, (_) => List.filled(2, 0.0));
+    matrixB = List.generate(2, (_) => List.filled(2, 0.0));
   }
+
   NashMatrix(this.matrixA, this.matrixB);
 
-  /// Метод для вычисления смешанного равновесия по Нэшу.
-  /// Возвращает Map с ключами 'p' и 'q', где
-  /// p - вероятность выбора первой стратегии игроком 1,
-  /// q - вероятность выбора первой стратегии игроком 2.
-  /// Если равновесие не найдено (или игра вырожденная), возвращает null.
-  Map<String, num>? findEquilibrium() {
-    // Для игрока 1: условие безразличия между стратегиями:
-    // q * matrixA[0][0] + (1 - q) * matrixA[0][1] = q * matrixA[1][0] + (1 - q) * matrixA[1][1]
-    num denominatorQ =
-        (matrixA[0][0] - matrixA[0][1]) - (matrixA[1][0] - matrixA[1][1]);
+  Map<String, double>? findEquilibrium() {
+    double a = matrixA[0][0];
+    double b = matrixA[0][1];
+    double c = matrixA[1][0];
+    double d = matrixA[1][1];
 
-    if (denominatorQ == 0) {
+    double e = matrixB[0][0];
+    double f = matrixB[0][1];
+    double g = matrixB[1][0];
+    double h = matrixB[1][1];
+
+    double denominatorP = (a - e) + (g - c);
+
+    double denominatorQ = (b - f) + (h - d);
+
+    if (denominatorQ == 0 || denominatorP == 0) return null;
+
+    double pNumerator = g - e;
+    double p = pNumerator / denominatorP;
+
+    double qNumerator = h - f;
+    double q = qNumerator / denominatorQ;
+
+    if (p < 0 || p > 1.0 || q < 0 || q > 1.0) {
       return null;
     }
 
-    num q = (matrixA[1][1] - matrixA[0][1]) / denominatorQ;
-
-    // Для игрока 2: условие безразличия между стратегиями:
-    // p * matrixB[0][0] + (1 - p) * matrixB[1][0] = p * matrixB[0][1] + (1 - p) * matrixB[1][1]
-    num denominatorP =
-        (matrixB[0][0] - matrixB[1][0]) - (matrixB[0][1] - matrixB[1][1]);
-
-    if (denominatorP == 0) {
-      return null;
-    }
-
-    double p = (matrixB[1][1] - matrixB[1][0]) / denominatorP;
-
-    // Проверка, что вероятности находятся в диапазоне [0, 1]
-    if (p < 0 || p > 1 || q < 0 || q > 1) {
-      return null;
-    }
+    p = max(0.0, min(1.0, p));
+    q = max(0.0, min(1.0, q));
 
     return {'p': p, 'q': q};
   }

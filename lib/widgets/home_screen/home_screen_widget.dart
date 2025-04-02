@@ -34,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         title: Text('Теоретико-игровая модель'),
         centerTitle: true,
+        leading: SizedBox(width: 1),
       ),
       body: IndexedStack(
         index: currentIndex,

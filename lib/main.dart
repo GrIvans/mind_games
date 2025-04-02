@@ -27,15 +27,20 @@ class GameTheoryApp extends StatelessWidget {
     return MaterialApp(
       title: 'Теория игр',
       theme: ThemeData(
-        brightness: context.watch<GameProvider>().isDarkThemeActivated
-            ? Brightness.dark
-            : Brightness.light,
         primarySwatch: Colors.indigo,
         visualDensity: VisualDensity.adaptivePlatformDensity,
         appBarTheme: AppBarTheme(
           elevation: 0,
         ),
       ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        primarySwatch: Colors.cyan,
+        primaryColor: Colors.indigo.shade300,
+      ),
+      themeMode: context.watch<GameProvider>().isDarkThemeActivated
+          ? ThemeMode.dark
+          : ThemeMode.light,
       routes: {
         "/home": (context) => HomeScreen(),
         "inputScreen": (context) => MatrixInputScreen(),
